@@ -80,7 +80,7 @@
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
     var n = Object.prototype.toString.call(o).slice(8, -1);
     if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(n);
+    if (n === "Map" || n === "Set") return Array.from(o);
     if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
   }
 
@@ -92,9 +92,12 @@
     return arr2;
   }
 
-  function _createForOfIteratorHelper(o) {
+  function _createForOfIteratorHelper(o, allowArrayLike) {
+    var it;
+
     if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-      if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+        if (it) o = it;
         var i = 0;
 
         var F = function () {};
@@ -120,8 +123,7 @@
       throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
 
-    var it,
-        normalCompletion = true,
+    var normalCompletion = true,
         didErr = false,
         err;
     return {
@@ -659,7 +661,7 @@
     directives: {
       ObserveVisibility: ObserveVisibility
     },
-    props: _objectSpread2({}, props, {
+    props: _objectSpread2(_objectSpread2({}, props), {}, {
       itemSize: {
         type: Number,
         default: null
@@ -1377,7 +1379,7 @@
     
 
     
-    const __vue_component__ = normalizeComponent(
+    const __vue_component__ = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
       __vue_script__,
@@ -1429,10 +1431,14 @@
         vscrollResizeObserver: this.$_resizeObserver
       };
     },
-    props: _objectSpread2({}, props, {
+    props: _objectSpread2(_objectSpread2({}, props), {}, {
       minItemSize: {
         type: [Number, String],
         required: true
+      },
+      emitUpdate: {
+        type: Boolean,
+        default: false
       }
     }),
     data: function data() {
@@ -1526,6 +1532,9 @@
         });
         this.$emit('visible');
       },
+      onScrollerUpdate: function onScrollerUpdate(startIndex, endIndex) {
+        this.$emit('update', startIndex, endIndex);
+      },
       forceUpdate: function forceUpdate() {
         var clear = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
@@ -1593,9 +1602,14 @@
               items: _vm.itemsWithSize,
               "min-item-size": _vm.minItemSize,
               direction: _vm.direction,
+              "emit-update": _vm.emitUpdate,
               "key-field": "id"
             },
-            on: { resize: _vm.onScrollerResize, visible: _vm.onScrollerVisible },
+            on: {
+              resize: _vm.onScrollerResize,
+              visible: _vm.onScrollerVisible,
+              update: _vm.onScrollerUpdate
+            },
             scopedSlots: _vm._u(
               [
                 {
@@ -1653,7 +1667,7 @@
     
 
     
-    const __vue_component__$1 = normalizeComponent(
+    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
       __vue_script__$1,
@@ -1893,7 +1907,7 @@
     
 
     
-    const __vue_component__$2 = normalizeComponent(
+    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
       {},
       __vue_inject_styles__$2,
       __vue_script__$2,
