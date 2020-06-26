@@ -26,8 +26,8 @@
       <div
         v-for="view of pool"
         :key="view.nr.id"
-        :zIndex="view.item.item.zIndex"
-        :style="ready ? { transform: `translate${direction === 'vertical' ? 'Y' : 'X'}(${view.position}px)`, zIndex: view.item.item.zIndex } : null"
+        :zIndex="view.item.item && view.item.item.zIndex ? view.item.item.zIndex : null"
+        :style="ready ? { transform: `translate${direction === 'vertical' ? 'Y' : 'X'}(${view.position}px)`, zIndex: (view.item.item && view.item.item.zIndex ? view.item.item && view.item.item.zIndex : null) } : null"
         class="vue-recycle-scroller__item-view"
         :class="{ hover: hoverKey === view.nr.key }"
         @mouseenter="hoverKey = view.nr.key"
